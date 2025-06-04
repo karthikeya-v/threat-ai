@@ -1,0 +1,21 @@
+name = "AIThreatIntelSystem"
+version = "0.1.0"
+authors = ["AI Agent <ai.agent@example.com>"] # You can change this if needed
+
+[deps]
+CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d09b"
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
+JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
+Logging = "56ddb016-857b-54e1-b83d-db4d58db5568"
+# Add more dependencies here as needed, for example:
+# HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
+# MLJ = "add582a8-1359-11e9-1e9a-2106979357bb"
+
+[compat]
+julia = "1.6" # Or your desired Julia version, LTS 1.6 or 1.10 are good choices
+CSV = "0.10"
+DataFrames = "1.5" # Check for latest compatible versions
+JSON = "0.21"
+Dates = "1"
+Logging = "1.2" # Or newer, ensure compatibility
