@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  julia-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: julia_threat_intel_system
+    # If your application needs to expose ports or mount volumes, define them here.
+    # For example:
+    # ports:
+    #   - "8080:8080"
+    # volumes:
+    #   - ./data:/app/data
+    #   - ./config:/app/config
+    # Environment variables can also be set here:
+    # environment:
+    #   - JULIA_DEBUG=all
+    command: ["julia", "src/main.jl"]
+    # To keep the container running if the main script exits, you might use:
+    # tty: true # or tail -f /dev/null, depending on desired behavior
+
+# Later, you can add other services like Elasticsearch, Kibana, etc.
+# volumes:
+#   esdata:
+#     driver: local
+
+# networks:
+#   threat-intel-net:
+#     driver: bridge
