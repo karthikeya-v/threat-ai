@@ -15,8 +15,11 @@ COPY src/Project.toml /app/Project.toml
 # Change to /app where Project.toml is
 RUN julia -e 'using Pkg; Pkg.activate("."); Pkg.instantiate()'
 
-# Copy the rest of the application code
+# Copy the application source code
 COPY src/ /app/src/
+
+# Copy the data directory
+COPY data/ /app/data/  # Added this line
 
 # Specify the command to run on container startup
 CMD ["julia", "src/main.jl"]
