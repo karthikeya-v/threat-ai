@@ -19,7 +19,7 @@ RUN julia -e 'using Pkg; Pkg.activate("."); Pkg.instantiate()'
 COPY src/ /app/src/
 
 # Copy the data directory
-COPY data/ /app/data/  # Added this line
+COPY data/ /app/data/
 
 # Specify the command to run on container startup
 CMD ["julia", "src/main.jl"]
