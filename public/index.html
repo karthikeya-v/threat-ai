@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Funky Fish UI - Anomalies</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Funky Fish Network Anomalies</h1>
+        <div id="error-message"></div>
+        <div id="loading-message">Loading anomalies...</div>
+        <div id="anomalies-container">
+            <!-- Anomalies will be populated here -->
+        </div>
+    </div>
+
+    <script>
+        // JavaScript from previous step remains the same
+        document.addEventListener('DOMContentLoaded', function() {
+            const anomaliesContainer = document.getElementById('anomalies-container');
+            const errorMessageDiv = document.getElementById('error-message');
+            const loadingMessageDiv = document.getElementById('loading-message');
+
+            fetch('/api/anomalies')
+                .then(response => {
+                    if (!response.ok) {
+                        // Try to parse error response if backend sends JSON error
+                        return response.json().then(err => {
+                            throw new Error(err.error || `HTTP error! status: ${response.status}`);
+                        }).catch(() => {
+                            // Fallback if error response is not JSON
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    loadingMessageDiv.style.display = 'none';
+                    if (data.error) {
+                        errorMessageDiv.textContent = `Error from API: ${data.error}` + (data.details ? ` Details: ${data.details}` : '');
+                        return;
+                    }
+
+                    if (data.message) { // e.g., "No anomalies detected"
+                        anomaliesContainer.innerHTML = `<p>${data.message}</p>`;
+                        return;
+                    }
+
+                    if (data.anomalies && data.anomalies.length > 0) {
+                        const table = document.createElement('table');
+                        const thead = document.createElement('thead');
+                        const tbody = document.createElement('tbody');
+                        const headers = Object.keys(data.anomalies[0]);
+
+                        // Create table header row
+                        const headerRow = document.createElement('tr');
+                        headers.forEach(headerText => {
+                            const th = document.createElement('th');
+                            th.textContent = headerText;
+                            headerRow.appendChild(th);
+                        });
+                        thead.appendChild(headerRow);
+                        table.appendChild(thead);
+
+                        // Create table body rows
+                        data.anomalies.forEach(anomaly => {
+                            const row = document.createElement('tr');
+                            headers.forEach(header => {
+                                const td = document.createElement('td');
+                                td.textContent = anomaly[header];
+                                row.appendChild(td);
+                            });
+                            tbody.appendChild(row);
+                        });
+                        table.appendChild(tbody);
+                        anomaliesContainer.appendChild(table);
+                    } else {
+                        anomaliesContainer.innerHTML = '<p>No anomalies data found or array is empty.</p>';
+                    }
+                })
+                .catch(error => {
+                    loadingMessageDiv.style.display = 'none';
+                    console.error('Fetch error:', error);
+                    errorMessageDiv.textContent = `Failed to fetch anomalies: ${error.message}`;
+                });
+        });
+    </script>
+</body>
+</html>

@@ -11,6 +11,7 @@ JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
 Logging = "56ddb016-857b-54e1-b83d-db4d58db5568"
 MLJ = "add582a8-1359-11e9-1e9a-2106979357bb" # Added
 StatsBase = "2913bbd2-ae8a-5f71-8c99-42f6c13210ba" # Added
+Genie = "1005b382-626c-11e9-0649-cb7270c911ae"
 
 [compat]
 julia = "1.6"
@@ -22,3 +23,4 @@ Dates = "1"
 Logging = "1.2"
 MLJ = "0.18" # Added - Check for latest compatible version with Julia 1.6
 StatsBase = "0.33" # Added - Check for latest compatible version
+Genie = "1.0" # Or a more recent compatible version, assuming 1.0 for now

@@ -1,0 +1,105 @@
+/* public/style.css */
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Roboto:wght@300;700&display=swap');
+
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #0A4D68, #088395, #05BFDB, #00FFCA);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    color: #f0f0f0;
+    line-height: 1.6;
+}
+
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.container {
+    width: 80%;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.3); /* Semi-transparent dark overlay */
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    position: relative; /* Needed for pseudo-elements like the fish scales */
+    z-index: 1; /* Ensure content is above potential ::before elements */
+}
+
+h1 {
+    font-family: 'Pacifico', cursive; /* Funky, Bruno Mars-esque font */
+    color: #FFD700; /* Gold color */
+    text-align: center;
+    font-size: 3em;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    overflow: hidden; /* For rounded corners on table */
+}
+
+th, td {
+    border: 1px solid #05BFDB; /* Teal border */
+    padding: 12px 15px;
+    text-align: left;
+    color: #f0f0f0;
+}
+
+th {
+    background-color: #088395; /* Darker teal for headers */
+    font-weight: bold;
+    color: #FFD700; /* Gold text for headers */
+}
+
+tr:nth-child(even) {
+    background-color: rgba(0,0,0,0.1); /* Slightly darker for alternate rows */
+}
+
+tr:hover {
+    background-color: rgba(255, 215, 0, 0.2); /* Gold hover effect */
+}
+
+#error-message {
+    color: #FF6B6B; /* Bright red for errors */
+    background-color: rgba(0,0,0,0.5);
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    text-align: center;
+    font-weight: bold;
+}
+
+#loading-message {
+    font-style: italic;
+    text-align: center;
+    padding: 20px;
+    font-size: 1.2em;
+    color: #00FFCA;
+}
+
+/* Fish scale pattern attempt for the container background (subtle) */
+.container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image:
+        radial-gradient(circle at 0% 50%, transparent 10px, #05BFDB 10.5px, transparent 11px),
+        radial-gradient(circle at 100% 50%, transparent 10px, #05BFDB 10.5px, transparent 11px);
+    background-size: 22px 44px; /* Adjust size of scales */
+    opacity: 0.1; /* Make it very subtle */
+    pointer-events: none; /* So it doesn't interfere with content */
+    z-index: -1; /* Behind the content */
+    border-radius: 15px; /* Match container's border radius */
+}

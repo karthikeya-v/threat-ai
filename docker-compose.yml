@@ -10,8 +10,8 @@ services:
     container_name: julia_threat_intel_system
     # If your application needs to expose ports or mount volumes, define them here.
     # For example:
-    # ports:
-    #   - "8080:8080"
+    ports:
+      - "8000:8000" # Map host port 8000 to container port 8000
     # volumes:
     #   - ./data:/app/data
     #   - ./config:/app/config

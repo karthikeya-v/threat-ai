@@ -35,5 +35,11 @@ COPY src/ /app/src/
 # Copy the data directory
 COPY data/ /app/data/
 
+# Copy the public directory for web assets
+COPY public/ /app/public/
+
+# Expose the port the app runs on
+EXPOSE 8000
+
 # Specify the command to run on container startup
 CMD ["julia", "src/main.jl"]

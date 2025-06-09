@@ -1,63 +1,51 @@
-using Logging
-using Dates
+using Genie, Genie.Router, Genie.Renderer, Genie.Renderer.Html, Genie.Renderer.Json # Added Json
+using Logging # For @error
+using DataFrames # For DataFrame operations if anomalies is a DataFrame
 
-# Include the new modules
+# --- Modules ---
 include("data_processing.jl")
 include("anomaly_detection.jl")
-
-# Make their functions available
 using .DataProcessing
 using .AnomalyDetection
 
-function main()
-    # Setup basic console logging
-    global_logger(ConsoleLogger(stdout, Logging.Info))
+# --- Web Routes --- #
 
-    @info "Starting AI Threat Intelligence System..."
-    @info "Timestamp: " * string(now())
+route("/") do
+  serve_static_file("index.html", root="public")
+end
 
-    println("-"^50)
-    println("Hello, Julia Threat Intelligence System!")
-    println("This is the main entry point of the application.")
-    println("-"^50)
-
-    # Define the path to the sample data
-    sample_data_path = "data/sample_netflow.csv" # Assuming Docker WORKDIR is /app
-
-    # 1. Load and Preprocess Data
-    @info "Attempting to load and preprocess data..."
+route("/api/anomalies") do
+  try
+    sample_data_path = "data/sample_netflow.csv"
     processed_df, features_for_analysis = load_and_preprocess_data(sample_data_path)
 
-    if !isempty(processed_df) && !isempty(features_for_analysis)
-        @info "Data loaded and preprocessed successfully."
-        @info "Features selected for anomaly detection: " * join(string.(features_for_analysis), ", ")
-        # println("First 5 rows of processed data:")
-        # println(first(processed_df, 5)) # Comment out for cleaner logs in production
-    else
-        @error "Failed to load or preprocess data. Exiting."
-        return # Exit if data loading fails
+    if isempty(processed_df) || isempty(features_for_analysis)
+      @error "API: Failed to load or preprocess data."
+      return json(:error => "Failed to load or preprocess data", status = 500)
     end
 
-    println("-"^50)
-
-    # 2. Detect Anomalies
-    @info "Attempting to detect anomalies..."
-    # We can adjust k_clusters and anomaly_threshold_factor as needed
     anomalies = detect_anomalies(processed_df, features_for_analysis, k_clusters=4, anomaly_threshold_factor=1.5)
 
     if !isempty(anomalies)
-        @warn "Potential anomalies detected:"
-        # In a real system, you'd format this output better or send it to an alert system
-        show(stdout, anomalies; allrows=true, allcols=true, show_row_number=false, summary=false)
-        println() # for a newline after show
+      # Convert DataFrame to a more JSON-friendly format (e.g., array of dicts)
+      # Genie's json() can often handle DataFrames directly, but let's be explicit for broader compatibility
+      output_anomalies = []
+      for row in eachrow(anomalies)
+          push!(output_anomalies, Dict(names(row) .=> values(row)))
+      end
+      return json(:anomalies => output_anomalies)
     else
-        @info "No anomalies detected based on current criteria."
+      return json(:message => "No anomalies detected based on current criteria.")
     end
-
-    println("-"^50)
-    @info "AI Threat Intelligence System processing complete."
+  catch ex
+    @error "API Error: " * sprint(showerror, ex)
+    return json(:error => "Internal server error while detecting anomalies", :details => sprint(showerror, ex), status = 500)
+  end
 end
 
-if abspath(PROGRAM_FILE) == @__FILE__
-    main()
-end
+# --- Main Server Start --- #
+
+# Ensure Genie configurations are set if needed (e.g., port, host)
+# For default, Genie.startup() is enough.
+# We will run it synchronously for now in the Docker container.
+Genie.startup(async=false, host="0.0.0.0", port=8000)
